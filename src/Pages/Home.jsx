@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import "../styles/home.css";
 import Logo from "../assets/logo.png";
 import likeicon from "../assets/icons/heart.svg";
@@ -98,6 +98,36 @@ function Home() {
     { product_name: "Brandix Manual Five Speed GearBox", product_image: product12 }
   ];
   var size = 4;
+
+  const [brandItems, setbrandItems] = useState([]);
+  const [productItems, setproductItems] = useState([])
+
+
+  useEffect(() => {
+       fetch('http://localhost:8081/api/list_brands',{
+          method: 'POST',
+          headers :{
+            'Content-Type' : 'application/json'
+          }
+       })
+       .then((res) => res.json())
+        .then((json) => {
+             setbrandItems(json)
+            })
+
+            fetch('http://localhost:8081/api/list_products',{
+              method: 'POST',
+              headers :{
+                'Content-Type' : 'application/json'
+              }
+           })
+           .then((res) => res.json())
+            .then((json) => {
+              setproductItems(json)
+                })
+  }, [])
+  
+
   return (
     <div>
       <div class="row m-3">
@@ -341,12 +371,12 @@ function Home() {
           </a>
         </div>
         <div className="row" style={{ marginTop: "20px" }}>
-          {arrayItems.length > 0 &&
-            arrayItems.map(function (item) {
+          {brandItems.length > 0 &&
+            brandItems.map(function (item) {
               return (
                 <div class="col col-sty">
-                  <img src={item.product_image} />
-                  <div>{item.product_name}</div>
+                  <img src={item.brand_image} />
+                  <div>{item.brand_name}</div>
                 </div>
               );
             })}
@@ -436,7 +466,8 @@ function Home() {
         {/* <hr /> */}
         <div className="row" style={{ marginTop: "20px" }}>
            {
-            product_items.map(function(item){
+            productItems.length > 0 && 
+            productItems.map(function(item){
                 return(
                     <div class="col-sm-4 p-2">
                     <div class="card">
